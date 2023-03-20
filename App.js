@@ -9,6 +9,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 
+const entryInd = 0;
+
 const theme = {
   
 }
@@ -16,20 +18,25 @@ const theme = {
 function HomeScreen({navigation}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headlineText}>LOG IN</Text>
-      <View style={styles.button}>
-        <Button 
-          title='Next Page.....'
-          onPress={() => navigation.navigate('Details')}
-          buttonColor='#3585AE'
+      <View style={styles.selectEntry}>
+        <Button
+          mode='text'
           textColor='white'
-          mode='contained'
+          style={styles.headlineText}
+          onPress={() => SwitchEntry(1)}
         >
-        <Text style={{color: 'white', fontSize: 15}}>Next Page......</Text>
-      </Button>
+          SIGN UP
+        </Button>
+        <Button
+          mode='text'
+          textColor='white'
+          style={styles.headlineText}
+          onPress={() => SwitchEntry(2)}
+        >
+          LOG IN
+        </Button>
       </View>
-
-      <View style={[styles.inputContainer, {marginBottom: 100}]}>
+      <View style={[styles.inputContainer, {bottom: 200}]}>
         <TextInput
           editable
           numberOfLines={1}
@@ -38,7 +45,7 @@ function HomeScreen({navigation}) {
           style={styles.accountInput}
         />
       </View>
-      <View style={[styles.inputContainer, {bottom: 350}, {marginTop: 0}]}>
+      <View style={[styles.inputContainer, {bottom: 100}]}>
         <TextInput
           editable
           numberOfLines={1}
@@ -48,8 +55,29 @@ function HomeScreen({navigation}) {
         />
       </View>
 
+      <View style={styles.button}>
+        <Button 
+          title='Next Page.....'
+          onPress={() => navigation.navigate('Details')
+        }
+          buttonColor='#3585AE'
+          textColor='white'
+          mode='contained'
+        >
+          Next Page......
+        </Button>
+      </View>
     </View>
   )
+}
+
+function SwitchEntry(entryNum) {
+  if (entryNum == 1){
+    entryType = 1;
+  } else if (entryNum == 2){
+    entryType = 2;
+  }
+  console.log(entryType);
 }
 
 function DetailsScreen() {
@@ -111,9 +139,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     backgroundColor: '#D9D9D9',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flexDirection: 'column',
-    alignContent: 'space-evenly',
+    alignContent: 'center',
     justifyContent: 'center',
+  },
+
+  selectEntry: {
+    marginTop: 300,
+    bottom: 200,
+    flexDirection: 'row',
   },
 });
