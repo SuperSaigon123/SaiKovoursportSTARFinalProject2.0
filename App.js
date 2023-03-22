@@ -1,20 +1,8 @@
 import * as React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import './config/firebase';
+import RootNavigation from './navigation';
 
-import { Provider as PaperProvider } from 'react-native-paper';
-//import App from './src/App';
-
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
-
-const entryInd = 0;
-
-const theme = {
-  
-}
-
+/*
 function HomeScreen({navigation}) {
   return (
     <View style={styles.container}>
@@ -50,6 +38,7 @@ function HomeScreen({navigation}) {
           editable
           numberOfLines={1}
           placeholder='PASSWORD'
+          secureTextEntry
           //value={password}
           style={styles.accountInput}
         />
@@ -80,74 +69,13 @@ function SwitchEntry(entryNum) {
   console.log(entryType);
 }
 
-function DetailsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Details Screen</Text>
-    </View>
-  );
-}
-
 const Stack = createNativeStackNavigator();
+
+*/
 
 export default function App() {
   return (
-    <PaperProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name='Home' component={HomeScreen} options={{ title: 'Overview' }} />
-          <Stack.Screen name='Details' component={DetailsScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <RootNavigation />
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#2B2B2B',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  button: {
-    paddingHorizontal: 30,
-    paddingVertical: 5,
-    marginVertical: 10,
-    width: 200,
-    height: 100,
-  },
-
-  headlineText: {
-    color: 'white',
-    fontSize: 24,
-    bottom: 25,
-    fontWeight: 'bold',
-    margin: 45,
-  },
-
-  inputContainer: {
-    flex: 0.05,
-    height: 55,
-    width: 298.5,
-    bottom: 300,
-    margin: -95,
-    marginTop: 20,
-    padding: 10,
-    paddingLeft: 20,
-    borderRadius: 20,
-    borderWidth: 2,
-    backgroundColor: '#D9D9D9',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-
-  selectEntry: {
-    marginTop: 300,
-    bottom: 200,
-    flexDirection: 'row',
-  },
-});
