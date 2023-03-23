@@ -1,15 +1,44 @@
 import * as React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import { Provider as PaperProvider } from 'react-native-paper';
-//import App from './src/App';
 
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Alert} from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { StackScreenProps } from '@react-navigation/stack';
 
-export default function EntryScreen() {
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+
+const auth = getAuth();
+
+export default function EntryScreen({navigation}) {
+  const [email, setEmail] = React.useState();
+  const [password, setPassword] = React.useState();
+  
+  async function signUp(){
+    if (email === '' || password === ''){
+      setEmail({email});
+      setPassword({password});
+      
+      Alert.alert(
+        "Error",
+        "Email and password are mandatory"
+      )
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password)
+      navigation.navigate('Home');
+    } catch {
+      
+    }
+
+  }
+
+  async function signIn(){
+
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.selectEntry}>
@@ -34,8 +63,8 @@ export default function EntryScreen() {
         <TextInput
           editable
           numberOfLines={1}
-          placeholder='USERNAME'
-          //value={username}
+          placeholder='EMAIL'
+          //value={email}
           style={styles.accountInput}
         />
       </View>

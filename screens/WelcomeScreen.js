@@ -1,12 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
+import {Button} from 'react-native-paper';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({navigation}) {
   return (
     <View style={styles.container}>
       <Text>Welcome!</Text>
       <StatusBar style="auto" />
+
+      <Button mode='contained' onPress={() => navigation.navigate('Entry')}>
+        Press me!
+      </Button>
     </View>
   );
 }
