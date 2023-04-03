@@ -1,17 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import {Button} from 'react-native-paper';
 
 export default function WelcomeScreen({navigation}) {
   return (
     <View style={styles.container}>
-      <Text>Welcome!</Text>
       <StatusBar style="auto" />
 
-      <Button mode='contained' onPress={() => navigation.navigate('Entry')}>
+      <Image
+        style={[{width: 300}, {height: 300}]}
+        source={require('../assets/sportSTARLogoFINALWhite.png')}
+      />
+
+      <Button 
+        mode='contained' 
+        onPress={() => navigation.navigate('Sign Up')}>
+        
         Press me!
+      </Button>
+
+      <Button 
+        mode='contained' 
+        onPress={() => navigation.navigate('Sign In')} 
+        style={[{marginTop: 30}]}>
+
+        Or me!
       </Button>
     </View>
   );
