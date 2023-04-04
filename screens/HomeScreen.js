@@ -5,9 +5,6 @@ import { useAuth } from '../utils/hooks/useAuth';
 import { Button } from 'react-native-elements';
 import GameScorePreview from '../components/GameScorePreview';
 
-import MavsLogo from '../assets/testimages/mavslogotest.png'
-import NuggetsLogo from '../assets/testimages/nuggetslogotest.png'
-
 const auth = getAuth();
 
 export default function HomeScreen() {
@@ -16,11 +13,19 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.scoresView}>
-      <Image source={require('../assets/testimages/mavslogotest.png')} style={styles.teamLogos}></Image>
         <SafeAreaView>
           <View style={styles.GSP}>
-            <Text style={styles.GSPInside}>DAL</Text>
-            <Text style={styles.GSPInside}>DEN</Text>
+            <View style={styles.GSPMini}>
+              <Image source={require('../assets/testimages/mavslogotest.png')} style={styles.teamLogos}></Image>
+              <Text style={styles.GSPInside}>DAL</Text>
+            </View>
+
+            <View style={[styles.GSPMini, {marginTop: 40}]}>
+              <Image source={require('../assets/testimages/nuggetslogotest.png')} style={styles.teamLogos}></Image>
+              <Text style={styles.GSPInside}>DEN</Text>
+            </View>
+
+            
           </View>
         </SafeAreaView>
 
@@ -73,14 +78,22 @@ const styles = StyleSheet.create({
     height: 86,
     borderRadius: 20,
   },
+  GSPMini: {
+    flex: 0.1,
+    flexDirection: 'row',
+    width: 100,
+  },
+
   GSPInside: {
-    padding: 10,
-    marginLeft: 10,
-    marginTop: 5,
+    padding: 20,
+    marginLeft: -10,
+    marginTop: -7.5,
     fontWeight: 'bold',
   },
   teamLogos: {
     width: 30,
     height: 30,
+    marginLeft: 10,
+    marginTop: 5
   }
 });
