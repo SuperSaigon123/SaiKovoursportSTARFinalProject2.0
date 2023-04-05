@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../utils/hooks/useAuth';
 import UserStack from './userStack';
 import AuthStack from './authStack';
+import TestTabNav from './TestTabNav';
 
 /*
     This component uses the useAuthentication hook to determine whether 
@@ -12,5 +13,5 @@ import AuthStack from './authStack';
 export default function RootNavigation() {
   const { user } = useAuth();
 
-  return user ? <UserStack /> : <AuthStack />;
+  return user ? <TestTabNav /> : <AuthStack />;
 }
