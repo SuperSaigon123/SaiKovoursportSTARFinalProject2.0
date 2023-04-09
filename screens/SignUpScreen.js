@@ -9,7 +9,6 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const auth = getAuth();
-
 export default function SignUpScreen({navigation}) {
   const [value, setValue] = React.useState({
     email: '',
