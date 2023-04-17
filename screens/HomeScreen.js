@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, useState, TextInput} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, useState, TextInput, KeyboardAvoidingView} from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuth } from '../utils/hooks/useAuth';
 import { Button } from 'react-native-elements';
@@ -52,28 +52,34 @@ export default function HomeScreen() {
 
       </View>
 
-      <View style={styles.tempViewForAPI}>
+      <KeyboardAvoidingView style={styles.tempViewForAPI}>
         <Text style={[{color: 'white'}, {fontSize: 20}]}>PPG: {PPG}</Text>
         <Text style={[{color: 'white'}, {fontSize: 20}]}>APG: {APG}</Text>
         <Text style={[{color: 'white'}, {fontSize: 20}]}>RPG: {RPG}</Text>
         <Text style={[{color: 'white'}, {fontSize: 20}]}>FG%: {FG}</Text>
 
         <TextInput
-          style={[{borderWidth: 1}, {height: 40}, {width: 200}, {marginTop: 40}, {padding: 20}, {backgroundColor: 'white'}]}
+          style={[{borderWidth: 1}, {width: 200}, {marginTop: 40}, {padding: 20}, {color: 'black'}]}
+          editable
+          backgroundColor="white"
           placeholder="Search a player"
-          placeholderTextColor="black"
-          color="black"
+          selectionColor="black"
           onChangeText={(value) => setPlayer(value)}
         />
         
-      </View>
+      </KeyboardAvoidingView>
 
       <Text style={[{color: 'white'}]}>Welcome {user?.email}!</Text>
       <Button title="Sign Out" style={styles.button} onPress={() => signOut(auth)} />
-      <Button title="Test API" style={styles.button} onPress={() => getID(player)} />
+      <Button title="Test API" style={styles.button} onPress={() => getPlayer(player)} />
 
     </View>
   );
+
+  function getPlayer(player){
+    let newID = getID(player);
+    getStats(newID);
+  }
 
   function getID(player){
     let inputID = '28978646789'
@@ -86,9 +92,11 @@ export default function HomeScreen() {
       }
     };
 
+    /*
     let spaceIndex = player.indexOf(" ")
     let playerFirstName = player.substring(0, spaceIndex);
     let playerLastName = player.substring(spaceIndex + 1);
+    */
   
     fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAPlayerInfo?playerName=${player}`, options)
       .then(response => response.json())
@@ -102,12 +110,18 @@ export default function HomeScreen() {
       .then(response => console.log(response))
       .catch(err => console.error(err));
 
-    getStats(inputID)
+    return inputID;
   }
 
   function getStats(ID){
     let GameNum = 0;
     console.log("Hi")
+
+    PointsNum = 0;
+    AssistNum = 0;
+    ReboundNum = 0;
+    FGTotal = 0;
+
 
     const options = {
       method: 'GET',
