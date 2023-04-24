@@ -77,12 +77,12 @@ export default function HomeScreen() {
   );
 
   function getPlayer(player){
-    let newID = getID(player);
-    getStats(newID);
+    getID(player);
   }
 
   function getID(player){
-    let inputID = '28978646789'
+    console.log("input player name from UI: %s", player)
+    let inputID = '28336662792'
 
     const options = {
       method: 'GET',
@@ -102,20 +102,28 @@ export default function HomeScreen() {
       .then(response => response.json())
       .then(data => {
         var testDict2 = eval(data).body
-        console.log(testDict2[0])
+        if(testDict2.length != 0){
+        
+        //console.log(testDict2[0])
         inputID = testDict2[0].playerID;
-        console.log(inputID)
+        
+          
+        console.log("response from API, input ID : %s", inputID)
+        getStats(inputID)
+        } else {
+          console.log("Invalid player")
+        }
       })
   
-      .then(response => console.log(response))
+      //.then(response => console.log("raw response of player ID query: %s ", response))
       .catch(err => console.error(err));
 
-    return inputID;
+
   }
 
   function getStats(ID){
     let GameNum = 0;
-    console.log("Hi")
+    //console.log("Hi")
 
     PointsNum = 0;
     AssistNum = 0;
@@ -131,116 +139,58 @@ export default function HomeScreen() {
       }
     };
 
-    console.log(ID)
+    console.log("Querying statistics for the player ID = %s ", ID)
     fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAGamesForPlayer?playerID=${ID}&season=2023`, options)
       .then(response => response.json())
       .then(data => {
+        console.log("Recieved response for stats")
         var testDict = eval(data).body
-        console.log(testDict)
-        
+        //console.log(testDict)
+       
         let count = 0; 
         for (key in testDict){
           if (testDict.hasOwnProperty(key)) {
-            //console.log(key+': ' +testDict[key])
-            PointsNum += (testDict[key].pts) * 1
-            AssistNum += (testDict[key].ast) * 1
-            ReboundNum += (testDict[key].reb) * 1
-            FGTotal += (testDict[key].fgp) * 1
+            tempPTS = parseInt(testDict[key].pts)
+            tempATS = parseInt(testDict[key].ast)
+            tempRPG = parseInt(testDict[key].reb)
+            tempFG = parseInt(testDict[key].fgp)
+            
+            if(!isNaN(tempPTS)){
+              //console.log(tempPTS)
+              PointsNum += (tempPTS)
+            }
+
+            if(!isNaN(tempATS)){
+              //console.log(tempATS)
+              AssistNum += (tempATS)
+            }
+
+            if(!isNaN(tempRPG)){
+              //console.log(tempRPG)
+              ReboundNum += (tempRPG)
+            }
+
+            if(!isNaN(tempFG)){
+              //console.log(tempFG)
+              FGTotal += (tempFG)
+            }
+            
             GameNum++;
+            //console.log(PointsNum + " " + GameNum + " " + key)
             count++;
           }
         }
   
-        setPPG(PointsNum/GameNum);
-        setRPG(ReboundNum/GameNum);
-        setAPG(AssistNum/GameNum);
-        setFG(FGTotal/GameNum);
-  
-        /*
-        console.log(data.body)
-        console.log(Object.keys(data.body).length)
-        */
-        //PointsNum = 
-  
-        /*
-        data.body.map(item => {
-          console.log(item)
-        })
-        */
+
+        setPPG((PointsNum/GameNum).toFixed(2));
+        setRPG((ReboundNum/GameNum).toFixed(2));
+        setAPG((AssistNum/GameNum).toFixed(2));
+        setFG((FGTotal/GameNum).toFixed(2));
         
-        //.reduce(sumReducer, 0);
       }).catch(error => console.error(error));
-      console.log(PointsNum/GameNum)
+      //console.log(PointsNum/GameNum)
   }
 }
-
-function sumReducer(sum, val){
-  return sum + val;
-}
-
-
-/*
-function testAPI(player) {
-  let inputID = '28336662792'
-
-  const options = {
-    method: 'GET',
-    headers: {
-      'X-RapidAPI-Key': '414e39efb2msh611f4a40a947106p1c473bjsn2988cfa9f72f',
-      'X-RapidAPI-Host': 'tank01-fantasy-stats.p.rapidapi.com'
-    }
-  };
-
-  let spaceIndex = player.indexOf(" ")
-  let playerFirstName = player.substring(0, spaceIndex);
-  let playerLastName = player.substring(spaceIndex + 1);
-
-  fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAPlayerInfo?playerName=${player}`, options)
-	  .then(response => response.json())
-    .then(data => {
-      var testDict2 = eval(data).body
-      inputID = testDict2[key].playerID;
-    })
-
-	  .then(response => console.log(response))
-	  .catch(err => console.error(err));
-
-  let GameNum = 0;
-  
-  
-  fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAGamesForPlayer?playerID=${inputID}&season=2023`, options)
-    .then(response => response.json())
-    .then(data => {
-      var testDict = eval(data).body
-      
-      let count = 0; 
-      console.log("1")
-      for (key in testDict){
-        if (testDict.hasOwnProperty(key)) {
-          //console.log(key+': ' +testDict[key])
-          PointsNum += (testDict[key].pts) * 1
-          AssistNum += (testDict[key].ast) * 1
-          ReboundNum += (testDict[key].reb) * 1
-          FGTotal += (testDict[key].fgp) * 1
-          GameNum++;
-          count++;
-        }
-      }
-      
-      console.log(count)
-      console.log(PointsNum)
-      console.log(PointsNum/GameNum)
-
-      setPPG(PointsNum/GameNum);
-      setRPG(ReboundNum/GameNum);
-      setAPG(AssistNum/GameNum);
-      setFG(FGTotal/GameNum);
-      
-      //.reduce(sumReducer, 0);
-    }).catch(error => console.error(error));
-    console.log(PointsNum/GameNum)
-}
-*/
 
 const styles = StyleSheet.create({
   container: {
