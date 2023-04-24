@@ -10,6 +10,11 @@ let AssistNum = 0;
 let ReboundNum = 0;
 let FGTotal = 0;
 
+let PointsNumPSN = 0;
+let AssistNumPSN = 0;
+let ReboundNumPSN = 0;
+let FGTotalPSN = 0;
+
 const auth = getAuth();
 
 export default function HomeScreen() {
@@ -20,6 +25,13 @@ export default function HomeScreen() {
   const [RPG, setRPG] = React.useState(0);
   const [APG, setAPG] = React.useState(0);
   const [FG, setFG] = React.useState(0);
+
+  const [PPGPSN, setPPGPSN] = React.useState(0);
+  const [RPGPSN, setRPGPSN] = React.useState(0);
+  const [APGPSN, setAPGPSN] = React.useState(0);
+  const [FGPSN, setFGPSN] = React.useState(0);
+
+  
 
   return (
     <View style={styles.container}>
@@ -123,6 +135,7 @@ export default function HomeScreen() {
 
   function getStats(ID){
     let GameNum = 0;
+    let GameNumPSN = 0;
     //console.log("Hi")
 
     PointsNum = 0;
@@ -130,6 +143,10 @@ export default function HomeScreen() {
     ReboundNum = 0;
     FGTotal = 0;
 
+    PointsNumPSN = 0;
+    AssistNumPSN = 0;
+    ReboundNumPSN = 0;
+    FGTotalPSN = 0;
 
     const options = {
       method: 'GET',
@@ -150,6 +167,7 @@ export default function HomeScreen() {
         let count = 0; 
         for (key in testDict){
           if (testDict.hasOwnProperty(key)) {
+
             tempPTS = parseInt(testDict[key].pts)
             tempATS = parseInt(testDict[key].ast)
             tempRPG = parseInt(testDict[key].reb)
@@ -174,10 +192,11 @@ export default function HomeScreen() {
               //console.log(tempFG)
               FGTotal += (tempFG)
             }
-            
+          
             GameNum++;
             //console.log(PointsNum + " " + GameNum + " " + key)
             count++;
+
           }
         }
   
@@ -186,9 +205,37 @@ export default function HomeScreen() {
         setRPG((ReboundNum/GameNum).toFixed(2));
         setAPG((AssistNum/GameNum).toFixed(2));
         setFG((FGTotal/GameNum).toFixed(2));
+
+        setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
+        setRPGPSN((ReboundNumPSN/GameNumPSN).toFixed(2));
+        setAPGPSN((AssistNumPSN/GameNumPSN).toFixed(2));
+        setFGPSN((FGTotalPSN/GameNumPSN).toFixed(2));
         
       }).catch(error => console.error(error));
       //console.log(PointsNum/GameNum)
+  }
+
+  function isRegSZN(gameID){
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': '414e39efb2msh611f4a40a947106p1c473bjsn2988cfa9f72f',
+        'X-RapidAPI-Host': 'tank01-fantasy-stats.p.rapidapi.com'
+      }
+    };
+
+    fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAGameInfo?gameID=${gameID}`, options)
+      .then(response => response.json())
+      .then(data => {
+        var testDict = eval(data).body
+
+        console.log(!((String)(testDict.SeasonType) === "Postseason"))
+        return !((String)(testDict.SeasonType) === "Postseason")
+        
+      })
+  
+      //.then(response => console.log("raw response of player ID query: %s ", response))
+      .catch(err => console.error(err));
   }
 }
 
