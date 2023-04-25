@@ -20,11 +20,12 @@ const auth = getAuth();
 export default function HomeScreen() {
   const { user } = useAuth();
   
-  const [player, setPlayer] = React.useState('Kevin Durant');
+  const [player, setPlayer] = React.useState('Player Name');
   const [PPG, setPPG] = React.useState(0);
   const [RPG, setRPG] = React.useState(0);
   const [APG, setAPG] = React.useState(0);
   const [FG, setFG] = React.useState(0);
+  const [playerPic, setplayerPic] = React.useState('https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png')
 
   const [PPGPSN, setPPGPSN] = React.useState(0);
   const [RPGPSN, setRPGPSN] = React.useState(0);
@@ -78,6 +79,20 @@ export default function HomeScreen() {
           selectionColor="black"
           onChangeText={(value) => setPlayer(value)}
         />
+
+        <View style={[styles.GSP, {top: 50}, {width: 328}, {padding: 0}]}>
+          <Image
+            style={{width: '25%', height: '100%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover'}}
+            source={{uri: playerPic }}
+          >
+          </Image>
+
+          <View style={{flexWrap: 'wrap'}}>
+            <Text style={[{color: 'black'}, {fontSize: 20}, {fontWeight: 'bold'}, {bottom: 80}, {marginLeft: 130}]}>{player}</Text>
+            <Text style={[{color: 'black'}, {fontSize: 15}, {fontWeight: 'bold'}, {bottom: 75}, {marginLeft: 100}]}>{PPG} PPG, {RPG} RPG {'\n'} {APG} APG, {FG}%</Text>
+          </View>
+          
+        </View>
         
       </KeyboardAvoidingView>
 
@@ -118,7 +133,7 @@ export default function HomeScreen() {
         
         //console.log(testDict2[0])
         inputID = testDict2[0].playerID;
-        
+        setplayerPic(testDict2.espnHeadshot)
           
         console.log("response from API, input ID : %s", inputID)
         getStats(inputID)
