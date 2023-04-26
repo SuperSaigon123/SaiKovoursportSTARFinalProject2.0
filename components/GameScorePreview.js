@@ -2,8 +2,6 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { TouchableRipple } from 'react-native-paper'
 
-
-
 function GameScorePreview({team1, team2}){
     <TouchableRipple
         style={styles.GSP}

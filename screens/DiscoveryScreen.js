@@ -1,19 +1,36 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TextInput} from 'react-native';
+import { View, Text, StyleSheet, TextInput, useState} from 'react-native';
+import {Button} from 'react-native-paper'
 
 
 export default function DiscoveryScreen() {
+  const [players, setPlayers] = React.useState([]);
+  const [player, setPlayer] = React.useState('Player Name')
+
   return (
     <View style={styles.container}>
 
       <TextInput
         style={styles.input}
         placeholder="Search players....."
-        placeholderTextColor="black"
+        placeholderTextColor="white"
+        color="white"
       />
+
+    <Button 
+      icon="magnify" 
+      mode="contained" 
+      buttonColor='#20526B'
+      style={styles.button}
+      onPress={() => console.log('Pressed')}>
+        SEARCH
+    </Button>
+      
 
     </View>
   );
+
+
 }
 
 const styles = StyleSheet.create({
@@ -31,9 +48,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 20,
     padding: 10,
+    paddingLeft: 20,
     backgroundColor: '#20526B',
     color: 'black'
   },
+  button: {
+    bottom: 450
+  }
 });
 
 

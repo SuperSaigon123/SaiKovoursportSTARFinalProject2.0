@@ -32,6 +32,7 @@ export default function HomeScreen() {
   const [APGPSN, setAPGPSN] = React.useState(0);
   const [FGPSN, setFGPSN] = React.useState(0);
 
+  const [displayName, setDisplayName] = React.useState('Player Name')
   
 
   return (
@@ -66,11 +67,6 @@ export default function HomeScreen() {
       </View>
 
       <KeyboardAvoidingView style={styles.tempViewForAPI}>
-        <Text style={[{color: 'white'}, {fontSize: 20}]}>PPG: {PPG}</Text>
-        <Text style={[{color: 'white'}, {fontSize: 20}]}>APG: {APG}</Text>
-        <Text style={[{color: 'white'}, {fontSize: 20}]}>RPG: {RPG}</Text>
-        <Text style={[{color: 'white'}, {fontSize: 20}]}>FG%: {FG}</Text>
-
         <TextInput
           style={[{borderWidth: 1}, {width: 200}, {marginTop: 40}, {padding: 20}, {color: 'black'}]}
           editable
@@ -88,8 +84,8 @@ export default function HomeScreen() {
           </Image>
 
           <View style={{flexWrap: 'wrap'}}>
-            <Text style={[{color: 'black'}, {fontSize: 20}, {fontWeight: 'bold'}, {bottom: 80}, {marginLeft: 130}]}>{player}</Text>
-            <Text style={[{color: 'black'}, {fontSize: 15}, {fontWeight: 'bold'}, {bottom: 75}, {marginLeft: 100}]}>{PPG} PPG, {RPG} RPG {'\n'} {APG} APG, {FG}%</Text>
+            <Text style={[{color: 'black'}, {fontSize: 20}, {fontWeight: 'bold'}, {bottom: 80}, {marginLeft: 130}]}>{displayName}</Text>
+            <Text style={[{color: 'black'}, {fontSize: 15}, {fontWeight: 'bold'}, {bottom: 75}, {marginLeft: 100}]}>{PPG} PPG, {RPG} RPG {'\n'} {APG} APG, {FG}% FG</Text>
           </View>
           
         </View>
@@ -133,7 +129,8 @@ export default function HomeScreen() {
         
         //console.log(testDict2[0])
         inputID = testDict2[0].playerID;
-        setplayerPic(testDict2.espnHeadshot)
+        //console.log(testDict2)
+        setplayerPic(testDict2[0].espnHeadshot)
           
         console.log("response from API, input ID : %s", inputID)
         getStats(inputID)
@@ -226,6 +223,7 @@ export default function HomeScreen() {
         setAPGPSN((AssistNumPSN/GameNumPSN).toFixed(2));
         setFGPSN((FGTotalPSN/GameNumPSN).toFixed(2));
         
+        setDisplayName(player);
       }).catch(error => console.error(error));
       //console.log(PointsNum/GameNum)
   }
