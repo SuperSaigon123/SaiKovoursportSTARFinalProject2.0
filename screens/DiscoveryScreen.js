@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TextInput, useState} from 'react-native';
+import { View, Text, StyleSheet, TextInput, useState, Image} from 'react-native';
 import {Button} from 'react-native-paper'
+
+import PlayerPreview from '../components/PlayerPreview';
 
 
 export default function DiscoveryScreen() {
@@ -17,15 +19,26 @@ export default function DiscoveryScreen() {
         color="white"
       />
 
-    <Button 
-      icon="magnify" 
-      mode="contained" 
-      buttonColor='#20526B'
-      style={styles.button}
-      onPress={() => console.log('Pressed')}>
-        SEARCH
-    </Button>
+      <Button 
+        icon="magnify" 
+        mode="contained" 
+        buttonColor='#20526B'
+        style={styles.button}
+        onPress={() => console.log('Pressed')}>
+          SEARCH
+      </Button>
       
+      {players}
+      <PlayerPreview
+        PPG='0'
+        RPG='0'
+        APG='0'
+        FG='0'
+        playerPic={'https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png'}
+        displayName={'Default Default'}
+      >
+
+      </PlayerPreview>
 
     </View>
   );
@@ -53,7 +66,8 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   button: {
-    bottom: 450
+    bottom: 450,
+    marginBottom: -60,
   }
 });
 
