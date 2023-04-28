@@ -218,12 +218,12 @@ export default function HomeScreen() {
         setAPG((AssistNum/GameNum).toFixed(2));
         setFG((FGTotal/GameNum).toFixed(2));
 
-        setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
+        /* setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
         setRPGPSN((ReboundNumPSN/GameNumPSN).toFixed(2));
         setAPGPSN((AssistNumPSN/GameNumPSN).toFixed(2));
         setFGPSN((FGTotalPSN/GameNumPSN).toFixed(2));
         
-        setDisplayName(player);
+        setDisplayName(player); */
       }).catch(error => console.error(error));
       //console.log(PointsNum/GameNum)
   }
