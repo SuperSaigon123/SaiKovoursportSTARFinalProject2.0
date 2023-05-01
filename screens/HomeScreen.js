@@ -228,28 +228,6 @@ export default function HomeScreen() {
       //console.log(PointsNum/GameNum)
   }
 
-  function isRegSZN(gameID){
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': '414e39efb2msh611f4a40a947106p1c473bjsn2988cfa9f72f',
-        'X-RapidAPI-Host': 'tank01-fantasy-stats.p.rapidapi.com'
-      }
-    };
-
-    fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAGameInfo?gameID=${gameID}`, options)
-      .then(response => response.json())
-      .then(data => {
-        var testDict = eval(data).body
-
-        console.log(!((String)(testDict.SeasonType) === "Postseason"))
-        return !((String)(testDict.SeasonType) === "Postseason")
-        
-      })
-  
-      //.then(response => console.log("raw response of player ID query: %s ", response))
-      .catch(err => console.error(err));
-  }
 }
 
 const styles = StyleSheet.create({

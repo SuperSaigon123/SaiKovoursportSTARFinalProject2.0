@@ -110,7 +110,6 @@ export default function DiscoveryScreen() {
 
   function getStats(ID){
     let GameNum = 0;
-    let GameNumPSN = 0;
     //console.log("Hi")
 
     PointsNum = 0;
@@ -138,34 +137,39 @@ export default function DiscoveryScreen() {
         for (key in testDict){
           if (testDict.hasOwnProperty(key)) {
 
-            tempPTS = parseInt(testDict[key].pts)
-            tempATS = parseInt(testDict[key].ast)
-            tempRPG = parseInt(testDict[key].reb)
-            tempFG = parseInt(testDict[key].fgp)
-            
-            if(!isNaN(tempPTS)){
-              //console.log(tempPTS)
-              PointsNum += (tempPTS)
-            }
+            let indicator = isRegSZN(testDict[key].gameID)
+            console.log("2 " + indicator)
 
-            if(!isNaN(tempATS)){
-              //console.log(tempATS)
-              AssistNum += (tempATS)
-            }
+            if (indicator){
+              tempPTS = parseInt(testDict[key].pts)
+              tempATS = parseInt(testDict[key].ast)
+              tempRPG = parseInt(testDict[key].reb)
+              tempFG = parseInt(testDict[key].fgp)
 
-            if(!isNaN(tempRPG)){
-              //console.log(tempRPG)
-              ReboundNum += (tempRPG)
-            }
+              if(!isNaN(tempPTS)){
+                //console.log(tempPTS)
+                PointsNum += (tempPTS)
+              }
 
-            if(!isNaN(tempFG)){
-              //console.log(tempFG)
-              FGTotal += (tempFG)
+              if(!isNaN(tempATS)){
+                //console.log(tempATS)
+                AssistNum += (tempATS)
+              }
+
+              if(!isNaN(tempRPG)){
+                //console.log(tempRPG)
+                ReboundNum += (tempRPG)
+              }
+
+              if(!isNaN(tempFG)){
+                //console.log(tempFG)
+                FGTotal += (tempFG)
+              }
+
+              GameNum++;
+              //console.log(PointsNum + " " + GameNum + " " + key)
+              count++;
             }
-          
-            GameNum++;
-            //console.log(PointsNum + " " + GameNum + " " + key)
-            count++;
 
           }
         }
@@ -175,8 +179,6 @@ export default function DiscoveryScreen() {
         setAPG((AssistNum/GameNum).toFixed(2));
         setFG((FGTotal/GameNum).toFixed(2));
 
-        setDisplayName(player)
-
         /* setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
         setRPGPSN((ReboundNumPSN/GameNumPSN).toFixed(2));
         setAPGPSN((AssistNumPSN/GameNumPSN).toFixed(2));
@@ -185,6 +187,27 @@ export default function DiscoveryScreen() {
         setDisplayName(player); */
       }).catch(error => console.error(error));
       //console.log(PointsNum/GameNum)
+  }
+
+  function isRegSZN(game){
+    let output = true;
+
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': '414e39efb2msh611f4a40a947106p1c473bjsn2988cfa9f72f',
+        'X-RapidAPI-Host': 'tank01-fantasy-stats.p.rapidapi.com'
+      }
+    };
+
+    fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAGameInfo?gameID=${game}`, options)
+      .then(response => response.json())
+      .then(data => {
+        output = (eval(data).body.seasonType == "Regular Season")
+        console.log("1 " + output)
+      }).catch(error => console.error(error));
+
+    return output;
   }
 }
 
