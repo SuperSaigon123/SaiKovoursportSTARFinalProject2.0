@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, TextInput, useState, Image, Alert} from 'react-native';
-import {Button} from 'react-native-paper'
+import {Button, Modal} from 'react-native-paper'
 
 import PlayerPreview from '../components/PlayerPreview';
 
@@ -20,6 +20,12 @@ export default function DiscoveryScreen() {
   const [FG, setFG] = React.useState(0);
   const [team, setTeam] = React.useState('FA')
   const [playerPic, setPlayerPic] = React.useState('https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png')
+
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = {backgroundColor: 'white', padding: 20};
 
   return (
     <View style={styles.container}>
@@ -50,14 +56,16 @@ export default function DiscoveryScreen() {
         team={team}
         playerPic={playerPic}
         displayName={displayName}
-        onPress={() => Alert.alert(player)}
       >
 
       </PlayerPreview>
 
+      <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+        <Image 
+          style={{width: '80%', height: '80%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover', alignSelf: 'center'}}
+          source={{uri: playerPic }}></Image>
+      </Modal>
     </View>
-
-    
   );
 
   function getPlayer(player){
@@ -92,6 +100,7 @@ export default function DiscoveryScreen() {
         inputID = testDict2[0].playerID;
         //console.log(testDict2)
         setPlayer(testDict2[0].bRefName)
+        console.log(testDict2[0].bRefName)
         setPlayerPic(testDict2[0].espnHeadshot)
         setTeam(testDict2[0].team)
           
