@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, Alert} from 'react-native';
-import showModal from '../screens/DiscoveryScreen'
+import { showModal } from '../screens/DiscoveryScreen'
 
-function PlayerPreview({PPG, RPG, APG, FG, displayName, playerPic, team}){
+function PlayerPreview({PPG, RPG, APG, FG, displayName, playerPic, team, onPress}){
     return(
         <TouchableOpacity 
             style={styles.container}
-            onPress={() => showModal()}
+            onPress={onPress}
             >
             <Image
                 style={{width: '25%', height: '100%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover'}}

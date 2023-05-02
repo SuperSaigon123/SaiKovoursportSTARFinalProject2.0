@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TextInput, useState, Image, Alert} from 'react-native';
-import {Button, Modal} from 'react-native-paper'
+import { View, Text, StyleSheet, TextInput, useState, Image, Alert, TouchableOpacity} from 'react-native';
+import {Button, Modal, Provider, Portal} from 'react-native-paper'
 
 import PlayerPreview from '../components/PlayerPreview';
 
@@ -28,44 +28,54 @@ export default function DiscoveryScreen() {
   const containerStyle = {backgroundColor: 'white', padding: 20};
 
   return (
-    <View style={styles.container}>
+    <Provider>
+      <Portal>
+        <Modal 
+          visible={visible} 
+          onDismiss={hideModal} 
+          contentContainerStyle={containerStyle}
+          style={styles.modalStyle}>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Search players....."
-        placeholderTextColor="white"
-        color="white"
-        onChangeText={(value) => setPlayer(value)}
-      />
+          
+          <Image 
+            style={{width: '80%', height: '80%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover', alignSelf: 'center'}}
+            source={{uri: playerPic }}></Image>
+        </Modal>
+      </Portal>
+      <View style={styles.container}>
 
-      <Button 
-        icon="magnify" 
-        mode="contained" 
-        buttonColor='#20526B'
-        style={styles.button}
-        onPress={() => getPlayer(player)}>
-          SEARCH
-      </Button>
-      
-      {players}
-      <PlayerPreview
-        PPG={PPG}
-        RPG={RPG}
-        APG={APG}
-        FG={FG}
-        team={team}
-        playerPic={playerPic}
-        displayName={displayName}
-      >
+        <TextInput
+          style={styles.input}
+          placeholder="Search players....."
+          placeholderTextColor="white"
+          color="white"
+          onChangeText={(value) => setPlayer(value)}
+        />
 
-      </PlayerPreview>
+        <Button 
+          icon="magnify" 
+          mode="contained" 
+          buttonColor='#20526B'
+          style={styles.button}
+          onPress={() => getPlayer(player)}>
+            SEARCH
+        </Button>
+        
+        {players}
+        <PlayerPreview
+          PPG={PPG}
+          RPG={RPG}
+          APG={APG}
+          FG={FG}
+          team={team}
+          playerPic={playerPic}
+          displayName={displayName}
+          onPress={() => showModal()}
+        >
 
-      <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-        <Image 
-          style={{width: '80%', height: '80%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover', alignSelf: 'center'}}
-          source={{uri: playerPic }}></Image>
-      </Modal>
-    </View>
+        </PlayerPreview>
+      </View>
+    </Provider>
   );
 
   function getPlayer(player){
@@ -95,17 +105,17 @@ export default function DiscoveryScreen() {
       .then(data => {
         var testDict2 = eval(data).body
         if(testDict2.length != 0){
-        
-        //console.log(testDict2[0])
-        inputID = testDict2[0].playerID;
-        //console.log(testDict2)
-        setPlayer(testDict2[0].bRefName)
-        console.log(testDict2[0].bRefName)
-        setPlayerPic(testDict2[0].espnHeadshot)
-        setTeam(testDict2[0].team)
           
-        console.log("response from API, input ID : %s", inputID)
-        getStats(inputID)
+          inputID = testDict2[0].playerID;
+          
+          console.log(testDict2[0].bRefName)
+          setDisplayName(testDict2[0].bRefName)
+          setPlayerPic(testDict2[0].espnHeadshot)
+          setTeam(testDict2[0].team)
+            
+          console.log("response from API, input ID : %s", inputID)
+          getStats(inputID)
+
         } else {
           console.log("Invalid player")
         }
@@ -147,7 +157,6 @@ export default function DiscoveryScreen() {
           if (testDict.hasOwnProperty(key)) {
 
             let indicator = isRegSZN(testDict[key].gameID)
-            console.log("2 " + indicator)
 
             if (indicator){
               tempPTS = parseInt(testDict[key].pts)
@@ -187,13 +196,14 @@ export default function DiscoveryScreen() {
         setRPG((ReboundNum/GameNum).toFixed(2));
         setAPG((AssistNum/GameNum).toFixed(2));
         setFG((FGTotal/GameNum).toFixed(2));
+        
 
         /* setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
         setRPGPSN((ReboundNumPSN/GameNumPSN).toFixed(2));
         setAPGPSN((AssistNumPSN/GameNumPSN).toFixed(2));
         setFGPSN((FGTotalPSN/GameNumPSN).toFixed(2));
         
-        setDisplayName(player); */
+         */
       }).catch(error => console.error(error));
       //console.log(PointsNum/GameNum)
   }
@@ -213,14 +223,11 @@ export default function DiscoveryScreen() {
       .then(response => response.json())
       .then(data => {
         output = (eval(data).body.seasonType == "Regular Season")
-        console.log("1 " + output)
       }).catch(error => console.error(error));
 
     return output;
   }
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -244,7 +251,16 @@ const styles = StyleSheet.create({
   button: {
     bottom: 450,
     marginBottom: -60,
+  },
+  modalStyle: {
+    width: 330,
+    height: 800,
+    left: '7.5%',
+    justifyContent: 'center',
+    alignSelf: 'center',
+
   }
 });
+
 
 
