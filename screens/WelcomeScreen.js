@@ -18,7 +18,7 @@ export default function WelcomeScreen({navigation}) {
         mode='contained' 
         onPress={() => navigation.navigate('Sign Up')}>
         
-        Press me!
+        Sign Up
       </Button>
 
       <Button 
@@ -26,7 +26,7 @@ export default function WelcomeScreen({navigation}) {
         onPress={() => navigation.navigate('Sign In')} 
         style={[{marginTop: 30}]}>
 
-        Or me!
+        Sign In
       </Button>
     </View>
   );

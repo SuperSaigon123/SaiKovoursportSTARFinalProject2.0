@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, TextInput, useState, Image, Alert, TouchableOpacity} from 'react-native';
 import {Button, Modal, Provider, Portal} from 'react-native-paper'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import PlayerPreview from '../components/PlayerPreview';
 
@@ -25,20 +26,30 @@ export default function DiscoveryScreen() {
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20};
+  const containerStyle = {backgroundColor: '#2B2B2B', height: '110%', width: '100%'};
 
   return (
     <Provider>
-      <Portal>
+      <Portal style={{height: '100%'}}>
         <Modal 
           visible={visible} 
           onDismiss={hideModal} 
           contentContainerStyle={containerStyle}
           style={styles.modalStyle}>
 
-          
+          <TouchableOpacity
+            onPress={hideModal}
+            >
+              <Button 
+                icon="close"
+                style={styles.closeIcon}
+                textColor="red">
+                
+              </Button>
+
+          </TouchableOpacity>
           <Image 
-            style={{width: '80%', height: '80%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover', alignSelf: 'center'}}
+            style={styles.imageStyle}
             source={{uri: playerPic }}></Image>
         </Modal>
       </Portal>
@@ -253,12 +264,31 @@ const styles = StyleSheet.create({
     marginBottom: -60,
   },
   modalStyle: {
-    width: 330,
-    height: 800,
-    left: '7.5%',
+    //right: '10%',
+    top: -20,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignSelf: 'center',
-
+    flex: 0.7
+  },
+  imageStyle: {
+    width: '40%', 
+    height: '20%', 
+    padding: 0, 
+    left: -100, 
+    bottom: 300, 
+    resizeMode: 'cover', 
+    alignSelf: 'center', 
+    right: '0%',
+  },
+  closeIcon: {
+    color: "red",
+    flexDirection: 'row',
+    bottom: 270,
+    left: 330,
+    height: 55,
+    width: 55,    
+    justifyContent: 'center',
   }
 });
 
