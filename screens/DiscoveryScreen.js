@@ -21,6 +21,7 @@ export default function DiscoveryScreen() {
   const [FG, setFG] = React.useState(0);
   const [team, setTeam] = React.useState('FA')
   const [playerPic, setPlayerPic] = React.useState('https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png')
+  const [playerPos, setPlayerPos] = React.useState('none')
 
   const [visible, setVisible] = React.useState(false);
 
@@ -51,6 +52,41 @@ export default function DiscoveryScreen() {
           <Image 
             style={styles.imageStyle}
             source={{uri: playerPic }}></Image>
+
+          <Text style={styles.textInModal}>{displayName}</Text>
+          <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Position: {playerPos}</Text>
+          <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Team: {team}</Text>
+          <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Postseason: </Text>
+          <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Year: </Text>
+
+          <View style={[{flexDirection: 'row'}]}>
+            <TouchableOpacity>
+              <Button
+                textColor='white'
+                buttonColor='green'  
+                mode="contained"
+                style={styles.buttonInModal}
+              >BUY</Button>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Button
+                textColor='white'
+                buttonColor='red'  
+                mode="contained"
+                style={styles.buttonInModal}
+              >SELL</Button>
+            </TouchableOpacity>
+
+            <TextInput
+              style={[{borderWidth: 1}, {bottom: 365}, {left: 40}, {width: 60}, {padding: 20}, {color: 'black'}, {fontSize: 20}]}
+              placeholder=""
+              placeholderTextColor="white"
+              color="black"
+              backgroundColor="white"
+              onChangeText={(value) => setPlayer(value)}
+            />
+          </View>
         </Modal>
       </Portal>
       <View style={styles.container}>
@@ -122,6 +158,7 @@ export default function DiscoveryScreen() {
           console.log(testDict2[0].bRefName)
           setDisplayName(testDict2[0].bRefName)
           setPlayerPic(testDict2[0].espnHeadshot)
+          setPlayerPos(testDict2[0].pos)
           setTeam(testDict2[0].team)
             
           console.log("response from API, input ID : %s", inputID)
@@ -161,7 +198,6 @@ export default function DiscoveryScreen() {
       .then(data => {
         console.log("Recieved response for stats")
         var testDict = eval(data).body
-        //console.log(testDict)
        
         let count = 0; 
         for (key in testDict){
@@ -276,7 +312,7 @@ const styles = StyleSheet.create({
     height: '20%', 
     padding: 0, 
     left: -100, 
-    bottom: 300, 
+    bottom: 250, 
     resizeMode: 'cover', 
     alignSelf: 'center', 
     right: '0%',
@@ -284,11 +320,25 @@ const styles = StyleSheet.create({
   closeIcon: {
     color: "red",
     flexDirection: 'row',
-    bottom: 270,
+    bottom: 200,
+    marginTop: 30,
     left: 330,
     height: 55,
     width: 55,    
     justifyContent: 'center',
+  },
+  textInModal: {
+    fontSize: 20,
+    bottom: 400,
+    left: 190,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonInModal:{
+    width: 100,
+    fontWeight: 'bold',
+    bottom: 350,
+    marginLeft: 25,
   }
 });
 
