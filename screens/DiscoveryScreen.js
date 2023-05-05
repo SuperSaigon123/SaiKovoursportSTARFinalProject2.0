@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, TextInput, useState, Image, Alert, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TextInput, useState, Image, Alert, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {Button, Modal, Provider, Portal} from 'react-native-paper'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -38,8 +38,10 @@ export default function DiscoveryScreen() {
           contentContainerStyle={containerStyle}
           style={styles.modalStyle}>
 
+          
           <TouchableOpacity
             onPress={hideModal}
+            style={[{marginTop: 300}]}
             >
               <Button 
                 icon="close"
@@ -53,7 +55,11 @@ export default function DiscoveryScreen() {
             style={styles.imageStyle}
             source={{uri: playerPic }}></Image>
 
-          <Text style={styles.textInModal}>{displayName}</Text>
+          <Text 
+            style={styles.textInModal}
+            adjustsFontSizeToFit={true}
+            allowFontScaling={true}
+            numberOfLines={1}>{displayName}</Text>
           <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Position: {playerPos}</Text>
           <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Team: {team}</Text>
           <Text style={[styles.textInModal, {fontSize: 15, marginTop: 15}]}>Postseason: </Text>
@@ -87,6 +93,34 @@ export default function DiscoveryScreen() {
               onChangeText={(value) => setPlayer(value)}
             />
           </View>
+
+          <View style={[{width: 350}, {backgroundColor: '#6C6B6B'}, {alignSelf: 'center'}, {bottom: 325}, {height: 115}, {borderRadius: 25}, {flexDirection: 'column'}]}>
+            <View style={[{flexDirection: 'row'}]}>
+              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>PPG</Text>
+              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>APG</Text>
+              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>RPG</Text>
+              <Text style={[{fontSize: 25}, {marginLeft: 27.5}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>FG%</Text>
+            </View>
+
+            <View style={[{flexDirection: 'row'}]}>
+              <Text style={[{fontSize: 20}, {marginLeft: 28}, {marginTop: 10}, {color: 'white'}]}>{PPG}</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 40}, {marginTop: 10}, {color: 'white'}]}>{APG}</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 40}, {marginTop: 10}, {color: 'white'}]}>{RPG}</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 27.5}, {marginTop: 10}, {color: 'white'}]}>{FG}%</Text>
+            </View>
+          </View>
+
+          <SafeAreaView style={[{width: 350}, {backgroundColor: '#6C6B6B'}, {alignSelf: 'center'}, {bottom: 315}, {height: 175}, {borderRadius: 25}]}>
+            <ScrollView>
+              <Text style={[{fontSize: 20}, {marginLeft: 20}]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.</Text>
+            </ScrollView>
+          </SafeAreaView>
         </Modal>
       </Portal>
       <View style={styles.container}>
