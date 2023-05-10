@@ -23,6 +23,12 @@ export default function DiscoveryScreen() {
   const [playerPic, setPlayerPic] = React.useState('https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png')
   const [playerPos, setPlayerPos] = React.useState('none')
 
+  const [lastPTS, setlastPTS] = React.useState(0);
+  const [lastRBS, setlastRBS] = React.useState(0);
+  const [lastATS, setlastATS] = React.useState(0);
+  const [lastFG, setlastFG] = React.useState(0);
+
+
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
@@ -85,7 +91,7 @@ export default function DiscoveryScreen() {
             </TouchableOpacity>
 
             <TextInput
-              style={[{borderWidth: 1}, {bottom: 365}, {left: 40}, {width: 60}, {padding: 20}, {color: 'black'}, {fontSize: 20}]}
+              style={[{borderWidth: 1}, {bottom: 365}, {left: 40}, {width: 70}, {padding: 20}, {color: 'black'}, {fontSize: 20}]}
               placeholder=""
               placeholderTextColor="white"
               color="black"
@@ -94,33 +100,32 @@ export default function DiscoveryScreen() {
             />
           </View>
 
-          <View style={[{width: 350}, {backgroundColor: '#6C6B6B'}, {alignSelf: 'center'}, {bottom: 325}, {height: 115}, {borderRadius: 25}, {flexDirection: 'column'}]}>
-            <View style={[{flexDirection: 'row'}]}>
+          <View style={[{width: 350}, {backgroundColor: '#6C6B6B'}, {alignSelf: 'center'}, {bottom: 350}, {height: 100}, {borderRadius: 25}, {flexDirection: 'row'}]}>
+            <View style={[{flexDirection: 'column'}]}>
               <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>PPG</Text>
-              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>APG</Text>
-              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>RPG</Text>
-              <Text style={[{fontSize: 25}, {marginLeft: 27.5}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>FG%</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 28}, {marginTop: 10}, {color: 'white'}, {alignSelf: 'center'}]}>{PPG}</Text>
+              
             </View>
 
-            <View style={[{flexDirection: 'row'}]}>
-              <Text style={[{fontSize: 20}, {marginLeft: 28}, {marginTop: 10}, {color: 'white'}]}>{PPG}</Text>
-              <Text style={[{fontSize: 20}, {marginLeft: 40}, {marginTop: 10}, {color: 'white'}]}>{APG}</Text>
-              <Text style={[{fontSize: 20}, {marginLeft: 40}, {marginTop: 10}, {color: 'white'}]}>{RPG}</Text>
-              <Text style={[{fontSize: 20}, {marginLeft: 27.5}, {marginTop: 10}, {color: 'white'}]}>{FG}%</Text>
+            <View style={[{flexDirection: 'column'}]}>
+              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>APG</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 40}, {marginTop: 10}, {color: 'white'}, {alignSelf: 'center'}]}>{APG}</Text>
+            </View>
+
+            <View style={[{flexDirection: 'column'}]}>
+              <Text style={[{fontSize: 25}, {marginLeft: 30}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>RPG</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 40}, {marginTop: 10}, {color: 'white'}, {alignSelf: 'center'}]}>{RPG}</Text>
+            </View>
+
+            <View style={[{flexDirection: 'column'}]}>
+              <Text style={[{fontSize: 25}, {marginLeft: 27.5}, {marginTop: 20}, {fontWeight: 'bold'}, {color: 'white'}]}>FG%</Text>
+              <Text style={[{fontSize: 20}, {marginLeft: 27.5}, {marginTop: 10}, {color: 'white'}, {alignSelf: 'center'}]}>{FG}%</Text>
             </View>
           </View>
 
-          <SafeAreaView style={[{width: 350}, {backgroundColor: '#6C6B6B'}, {alignSelf: 'center'}, {bottom: 315}, {height: 175}, {borderRadius: 25}]}>
-            <ScrollView>
-              <Text style={[{fontSize: 20}, {marginLeft: 20}]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.</Text>
-            </ScrollView>
-          </SafeAreaView>
+          <View style={[{width: 350}, {backgroundColor: '#6C6B6B'}, {alignSelf: 'center'}, {bottom: 340}, {height: 230}, {borderRadius: 25}]}>
+            <Text style={[{fontSize: 40}, {color: 'white'}, {fontWeight: 'bold'}, {padding: 20}]}>SC 100</Text>
+          </View>
         </Modal>
       </Portal>
       <View style={styles.container}>
@@ -350,12 +355,13 @@ const styles = StyleSheet.create({
     resizeMode: 'cover', 
     alignSelf: 'center', 
     right: '0%',
+    marginTop: 50,
   },
   closeIcon: {
     color: "red",
     flexDirection: 'row',
-    bottom: 200,
-    marginTop: 30,
+    bottom: 170,
+    marginTop: 50,
     left: 330,
     height: 55,
     width: 55,    
