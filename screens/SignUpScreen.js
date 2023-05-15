@@ -5,16 +5,42 @@ import { StyleSheet, Text, View, TextInput, Alert, Image, SafeAreaView} from 're
 import { Button, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { StackScreenProps } from '@react-navigation/stack';
+import { setDoc, collection, getFirestore, doc} from "firebase/firestore";
 
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const auth = getAuth();
+const db = getFirestore();
+const usersCollection = collection(db, 'users');
+
+
 export default function SignUpScreen({navigation}) {
   const [value, setValue] = React.useState({
     email: '',
     password: '',
     error: ''
   })
+
+  async function create(){
+    try {
+      const user = getAuth().currentUser;
+      if (user) {
+        const uid = user.uid;
+        const userDocRef = doc(usersCollection);
+
+        await setDoc(doc(db, "users", uid), {
+          uid: uid,
+          email: value.email, // Replace with the user's username
+          password: value.password, // Replace with the user's password
+          userBalance: 0
+        });
+      }
+      
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+    
+  }
 
   async function signUp() {
     if (value.email === '' || value.password === '') {
@@ -27,6 +53,7 @@ export default function SignUpScreen({navigation}) {
 
     try {
       await createUserWithEmailAndPassword(auth, value.email, value.password);
+      create();
       navigation.navigate('Sign In');
     } catch (error) {
       setValue({
