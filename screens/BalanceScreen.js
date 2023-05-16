@@ -1,21 +1,26 @@
-import * as React from 'react';
-import { View, Text, StyleSheet, TextInput, useState, useEffect, Alert} from 'react-native';
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, TextInput, Alert, useState} from 'react-native';
 import { Button } from 'react-native-paper';
 import InputSpinner from 'react-native-input-spinner'
 import { getAuth, onAuthStateChanged, getFireBase} from 'firebase/auth'
-import { doc, getFirestore, updateDoc, collection, query, where, getDoc} from "firebase/firestore";
+import { doc, getFirestore, updateDoc, collection, query, where, getDoc, onSnapshot} from "firebase/firestore";
 
 const db = getFirestore();
 const auth = getAuth();
 const user = auth.currentUser
-const userRef = doc(db, 'users', user.uid);
+
+let initialBalance = 0;
+let incrementTest = 1;
+
+let userRef = null;
 
 export default function BalanceScreen() {
-  const [balance, setBalance] = React.useState(getBalance);
+  const [balance, setBalance] = React.useState(0);
   const [incrementPUR, setIncrementPUR] = React.useState(200);
   const [incrementWITH, setIncrementWITH] = React.useState(200);
-
+  
   return (
+    
     <View style={styles.container}>
       <Text style={{color: 'white', fontSize: 32, marginBottom: 10, fontWeight: 'bold'}}>BALANCE: {balance} SC</Text>
       <Text style={{color: 'grey', fontSize: 24, marginBottom: 70}}>Recently spent:</Text>
@@ -32,6 +37,7 @@ export default function BalanceScreen() {
         style={{marginBottom: 20}}
         onChange={(incrementPUR) => {
           console.log("Buying " + incrementPUR + " SC");
+          console.log(user.uid)
           setIncrementPUR(incrementPUR)
         }}
       ></InputSpinner>
@@ -56,6 +62,7 @@ export default function BalanceScreen() {
         style={{marginBottom: 20}}
         onChange={(incrementWITH) => {
           console.log("Withdrawing " + incrementWITH + " SC");
+          console.log("Balance: " + balance)
           setIncrementWITH(incrementWITH)
         }}
       ></InputSpinner>
@@ -70,44 +77,71 @@ export default function BalanceScreen() {
     </View>
   );
 
-  async function getBalance(){
-    const docSnap = await getDoc(userRef);
-        if (docSnap.exists()) {
-          console.log("Document data:", docSnap.data());
-          if (docSnap.data().userBalance == "NaN"){
-            return 0;
-          }
-        } else {
-          // docSnap.data() will be undefined in this case
-          console.log("No such document!");
-        }
-  }
-
   async function modifyBalance(type) {
     try {
-        console.log(1)
-        
-        console.log(2)
-        if (type === 1) {
-          if (balance + incrementPUR > 10000) {
-            Alert.alert('Error', 'SC capped at 10,000 SC');
-          } else {
-            setBalance(balance + incrementPUR);
-          }
-        } else {
-          if (incrementWITH > balance) {
-            Alert.alert('Error', 'You cannot withdraw more than your account balance');
-          } else {
-            setBalance(balance - incrementWITH);
-          }
-        }
-  
-        console.log(3)
-        
+        if (user){
+          getUpdatedBalance();
+          userRef = doc(db, 'users', user.uid);
 
-        await updateDoc(userRef, {
-          userBalance: balance,
-        }); 
+          console.log(1)
+        
+          console.log(2)
+
+          if (type === 1) {
+            if (balance + incrementPUR > 10000) {
+              Alert.alert('Error', 'SC capped at 10,000 SC');
+            } else {
+
+              console.log(initialBalance + " " + balance + " " + incrementPUR)
+              if (incrementTest == 1){
+                await updateDoc(userRef, {
+                  userBalance: initialBalance * 1 + balance + incrementPUR,
+                }); 
+              } else{
+                await updateDoc(userRef, {
+                  userBalance: balance + incrementPUR,
+              }); 
+              }
+              
+
+              if (incrementTest == 1){
+                setBalance(initialBalance * 1 + balance + incrementPUR);
+              } else{
+                setBalance(balance + incrementPUR);
+              }
+
+              incrementTest++;
+              
+            }
+          } else {
+            if (incrementWITH > balance) {
+              Alert.alert('Error', 'You cannot withdraw more than your account balance');
+            } else {
+              console.log(initialBalance + " " + balance + " " + incrementWITH)
+              if (incrementTest == 1){
+                await updateDoc(userRef, {
+                  userBalance: initialBalance * 1 + balance - incrementWITH,
+                }); 
+              } else {
+                await updateDoc(userRef, {
+                  userBalance: balance - incrementWITH,
+                }); 
+              }
+              
+              if (incrementTest == 1){
+                setBalance(initialBalance * 1 + balance - incrementWITH);
+              } else{
+                setBalance(balance - incrementWITH);
+              }
+
+              incrementTest++;
+              
+            }
+          }
+    
+          console.log(3)
+        }
+        
         
       
     } catch (error) {
@@ -116,7 +150,24 @@ export default function BalanceScreen() {
   }
 }
 
+async function getUpdatedBalance(){
+  if (user){
+    const tempRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(tempRef)
+  
+    if (docSnap.exists()) {
+      console.log("Balance: " + docSnap.data().userBalance)
+      initialBalance = docSnap.data().userBalance;
+      console.log("Balance 2: " + initialBalance)
+      return docSnap.data().userBalance;
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+    }
 
+    console.log(user.uid)
+  }
+}
 
 const styles = StyleSheet.create({
   container: {

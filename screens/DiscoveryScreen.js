@@ -2,6 +2,8 @@ import * as React from 'react';
 import { View, Text, StyleSheet, TextInput, useState, Image, Alert, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {Button, Modal, Provider, Portal} from 'react-native-paper'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import PlayerModal from '../components/PlayerModal'
+import InputSpinner from 'react-native-input-spinner'
 
 import PlayerPreview from '../components/PlayerPreview';
 
@@ -28,7 +30,7 @@ export default function DiscoveryScreen() {
   const [lastATS, setlastATS] = React.useState(0);
   const [lastFG, setlastFG] = React.useState(0);
 
-
+  const [defaultStatus, setDefaultStatus] = React.useState(true);
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
@@ -282,6 +284,8 @@ export default function DiscoveryScreen() {
         setRPG((ReboundNum/GameNum).toFixed(2));
         setAPG((AssistNum/GameNum).toFixed(2));
         setFG((FGTotal/GameNum).toFixed(2));
+
+        setDefaultStatus(false);
         
 
         /* setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
