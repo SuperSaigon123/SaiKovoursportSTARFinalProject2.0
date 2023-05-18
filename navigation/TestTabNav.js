@@ -33,9 +33,6 @@ function MainContainer() {
             } else if (rn === discoverName) {
               iconName = focused ? 'ios-search' : 'ios-search-outline';
 
-            } else if (rn === portfolioName) {
-              iconName = focused ? 'ios-briefcase' : 'ios-briefcase-outline';
-
             } else if (rn == balanceName) {
               iconName = focused ? 'cash' : 'cash-outline';
             }
@@ -54,7 +51,6 @@ function MainContainer() {
 
         <Tab.Screen name={homeName} component={HomeScreen} />
         <Tab.Screen name={discoverName} component={DiscoveryScreen} />
-        <Tab.Screen name={portfolioName} component={PortfolioScreen} />
         <Tab.Screen name={balanceName} component={BalanceScreen} />
 
       </Tab.Navigator>

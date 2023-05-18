@@ -5,14 +5,15 @@ import { StyleSheet, Text, View, TextInput, Alert, Image, SafeAreaView} from 're
 import { Button, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { StackScreenProps } from '@react-navigation/stack';
-import { setDoc, collection, getFirestore, doc} from "firebase/firestore";
+import { setDoc, collection, getFirestore, doc, addDoc} from "firebase/firestore";
 
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const auth = getAuth();
 const db = getFirestore();
 const usersCollection = collection(db, 'users');
-
+let userRef = null
+let user = null
 
 export default function SignUpScreen({navigation}) {
   const [value, setValue] = React.useState({
@@ -23,21 +24,48 @@ export default function SignUpScreen({navigation}) {
 
   async function create(){
     try {
-      const user = getAuth().currentUser;
+      user = getAuth().currentUser;
       if (user) {
         const uid = user.uid;
-        const userDocRef = doc(usersCollection);
 
-        await setDoc(doc(db, "users", uid), {
+        userRef = doc(db, "users", uid)
+        await setDoc(userRef, {
           uid: uid,
           email: value.email, // Replace with the user's username
           password: value.password, // Replace with the user's password
           userBalance: 0
         });
+
+        
       }
       
     } catch (e) {
       console.error("Error adding document: ", e);
+    }
+
+    try {
+      user = getAuth().currentUser;
+      if (user){
+        const uid = user.uid;
+
+        userRef = doc(db, "users", uid)
+        console.log(collection(db, "users", uid, "players"))
+        await setDoc(doc(db, "users", uid, "players", "Michael Jordan"), {
+          nameOfPlayer: "Michael Jordan",
+          playerID: 7210199596,
+          thenSC: 999.99,
+          quantity: 1,
+          PPG: 30.1,
+          APG: 5.3,
+          RPG: 6.2,
+          FG: 49.7,
+          team: "CHI",
+          playerPic: "random.jpg"
+      });
+      }
+      
+    } catch (e) {
+      console.error("Error adding player document: ", e)
     }
     
   }

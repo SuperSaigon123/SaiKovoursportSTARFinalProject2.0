@@ -1,233 +1,164 @@
-import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, useState, TextInput, KeyboardAvoidingView} from 'react-native';
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View, SafeAreaView, Image, useState, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuth } from '../utils/hooks/useAuth';
-import { Button } from 'react-native-elements';
-import GameScorePreview from '../components/GameScorePreview';
-
-let PointsNum = 0;
-let AssistNum = 0;
-let ReboundNum = 0;
-let FGTotal = 0;
-
-let PointsNumPSN = 0;
-let AssistNumPSN = 0;
-let ReboundNumPSN = 0;
-let FGTotalPSN = 0;
+import { IconButton, Button, Provider, Portal } from 'react-native-paper';
+import { doc, getFirestore, getDoc, getDocs, collection, query, where, setDoc, onSnapshot, updateDoc, deleteDoc} from "firebase/firestore";
+import PlayerPreview from '../components/PlayerPreview';
+import PlayerPreviewWithoutModal from "../components/PlayerPreviewWithoutModal";
 
 const auth = getAuth();
+let activeUser = null;
+const db = getFirestore();
+let docSnapPlayer = null;
+
+let arraycount = 0;
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  
-  const [player, setPlayer] = React.useState('Player Name');
-  const [PPG, setPPG] = React.useState(0);
-  const [RPG, setRPG] = React.useState(0);
-  const [APG, setAPG] = React.useState(0);
-  const [FG, setFG] = React.useState(0);
-  const [playerPic, setplayerPic] = React.useState('https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png')
 
-  const [PPGPSN, setPPGPSN] = React.useState(0);
-  const [RPGPSN, setRPGPSN] = React.useState(0);
-  const [APGPSN, setAPGPSN] = React.useState(0);
-  const [FGPSN, setFGPSN] = React.useState(0);
-
-  const [displayName, setDisplayName] = React.useState('Player Name')
+  const [playerArray, setPlayerArray] = React.useState([])
+  const [playerNameArray, setPlayerNameArray] = React.useState([])
+  const [isTextVisible, setIsTextVisible] = React.useState(true);
+  const [isArrayVisible, setIsArrayVisible] = React.useState(false);
   
+  
+
+  useEffect(() => {
+    
+  }, [])
 
   return (
     <View style={styles.container}>
-      <View style={styles.scoresView}>
-        <SafeAreaView>
-          <View style={styles.GSP}>
-            <View style={styles.GSPMini}>
-              <Image source={require('../assets/testimages/mavslogotest.png')} style={styles.teamLogos}></Image>
-              <Text style={styles.GSPInside}>DAL</Text>
-              <Text style={[styles.GSPInside, {fontSize: 11}, {color: 'grey'}, {marginLeft: -25}, {marginTop: -5}]}>(31-28)</Text>
-            </View>
 
-            <View style={[styles.GSPMini, {marginTop: 40}]}>
-              <Image source={require('../assets/testimages/nuggetslogotest.png')} style={styles.teamLogos}></Image>
-              <Text style={styles.GSPInside}>DEN</Text>
-              <Text style={[styles.GSPInside, {fontSize: 11}, {color: 'grey'}, {marginLeft: -25}, {marginTop: -5}]}>(40-18)</Text>
-            </View>
+      {isTextVisible ? (
+        <Text style={[{color: 'white', fontSize: 20}]}>You don't have any players. {'\n'}{'\n'} Go to the Discovery Screen!</Text>
+      ) : null}
 
-            
-          </View>
-        </SafeAreaView>
-
-      </View>
-
-      <View style={styles.playersView}>
-
-      </View>
-
-      <View style={styles.risersView}>
-
-      </View>
-
-      <KeyboardAvoidingView style={styles.tempViewForAPI}>
-        <TextInput
-          style={[{borderWidth: 1}, {width: 200}, {marginTop: 40}, {padding: 20}, {color: 'black'}]}
-          editable
-          backgroundColor="white"
-          placeholder="Search a player"
-          selectionColor="black"
-          onChangeText={(value) => setPlayer(value)}
-        />
-
-        <View style={[styles.GSP, {top: 50}, {width: 328}, {padding: 0}]}>
-          <Image
-            style={{width: '25%', height: '100%', padding: 0, right: -10, bottom: 5, resizeMode: 'cover'}}
-            source={{uri: playerPic }}
-          >
-          </Image>
-
-          <View style={{flexWrap: 'wrap'}}>
-            <Text style={[{color: 'black'}, {fontSize: 20}, {fontWeight: 'bold'}, {bottom: 80}, {marginLeft: 130}]}>{displayName}</Text>
-            <Text style={[{color: 'black'}, {fontSize: 15}, {fontWeight: 'bold'}, {bottom: 75}, {marginLeft: 100}]}>{PPG} PPG, {RPG} RPG {'\n'} {APG} APG, {FG}% FG</Text>
-          </View>
-          
+      {isArrayVisible ? (
+        <View style={styles.playerContainer}>
+          {playerArray.map((item) => (
+            <PlayerPreview
+              PPG={item.PPG}
+              RPG={item.RPG}
+              APG={item.APG}
+              FG={item.FG}
+              team={item.team}
+              playerPic={item.playerPic}
+              displayName={item.nameOfPlayer}
+              onPress={() => updateQuantity(item.nameOfPlayer, item.SC)}
+            />
+          ))}
         </View>
-        
-      </KeyboardAvoidingView>
+       
 
-      <Text style={[{color: 'white'}]}>Welcome {user?.email}!</Text>
-      <Button title="Sign Out" style={styles.button} onPress={() => signOut(auth)} />
-      <Button title="Test API" style={styles.button} onPress={() => getPlayer(player)} />
+      ) : null}
+      
+      <View style={{flexDirection: 'row'}}>
+          <IconButton 
+        icon="reload" 
+        style={styles.button} 
+        iconColor={"#3585AE"} 
+        mode={'contained'} 
+        onPress={() => fetchPlayers()}>
+
+      </IconButton>
+
+      <IconButton 
+        icon="exit-to-app" 
+        style={styles.button} 
+        iconColor={"#3585AE"} 
+        mode={'contained'} 
+        onPress={() => signOut(auth)}>
+
+      </IconButton>  
+      </View>
+      
 
     </View>
   );
 
-  function getPlayer(player){
-    getID(player);
+  async function updateQuantity(playerName, SCValue){
+    docSnapPlayer = await getDoc(doc(db, "users", user.uid, "players", playerName));
+    //console.log(docSnapPlayer.data().quantity)
+
+    if (docSnapPlayer.data() == undefined){
+      Alert.alert("You do not own this player anymore.")
+    } else {
+      Alert.alert(playerName, "You have " + docSnapPlayer.data().quantity + " of " + playerName + " purchased at " + SCValue +" SC each")
+    }
   }
 
-  function getID(player){
-    console.log("input player name from UI: %s", player)
-    let inputID = '28336662792'
+  async function updatePlayerView(playerName){
+    return await getDoc(doc(db, "users", user.uid, "players", item.nameOfPlayer));
+  }
 
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': '414e39efb2msh611f4a40a947106p1c473bjsn2988cfa9f72f',
-        'X-RapidAPI-Host': 'tank01-fantasy-stats.p.rapidapi.com'
-      }
-    };
+  async function fetchPlayers(){
+    let count = 0;
+    const collectionRef = collection(db, 'users', user.uid, 'players');
+    const querySnapshot = await getDocs(collectionRef);
 
-    /*
-    let spaceIndex = player.indexOf(" ")
-    let playerFirstName = player.substring(0, spaceIndex);
-    let playerLastName = player.substring(spaceIndex + 1);
-    */
-  
-    fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAPlayerInfo?playerName=${player}`, options)
-      .then(response => response.json())
-      .then(data => {
-        var testDict2 = eval(data).body
-        if(testDict2.length != 0){
+    console.log("Step 1")
+    const nameValues = [];
+    querySnapshot.forEach((doc) => {
+      const nameValue = doc.get('nameOfPlayer');
+      nameValues.push(nameValue);
+    });
+    console.log(nameValues)
+    console.log(playerNameArray)
+
+    const notIncludedArray = nameValues.filter((element) => !playerNameArray.includes(element));
+    console.log(notIncludedArray)
+    notIncludedArray.map(async (name) => {
+    console.log("Step 2D")  
+      if (name !== "Michael Jordan"){
         
-        //console.log(testDict2[0])
-        inputID = testDict2[0].playerID;
-        //console.log(testDict2)
-        setplayerPic(testDict2[0].espnHeadshot)
-          
-        console.log("response from API, input ID : %s", inputID)
-        getStats(inputID)
+        const tempPlayerRef = doc(db, 'users', user.uid, 'players', name);
+        const documentSnapshot = await getDoc(tempPlayerRef);
+        let newItem = null
+        console.log("Step 2A")
+
+        if (documentSnapshot.exists()) {
+          const PPG = documentSnapshot.get('PPG');
+          const APG = documentSnapshot.get('APG');
+          const RPG = documentSnapshot.get('RPG');
+          const FG = documentSnapshot.get('FG');
+          const playerName = documentSnapshot.get('nameOfPlayer');
+          const playerPic = documentSnapshot.get('playerPic');
+          const quantity = documentSnapshot.get('quantity');
+          const team = documentSnapshot.get('team');
+          const playerID = documentSnapshot.get('playerID');
+          const SCValue = documentSnapshot.get('thenSC');
+
+          console.log("Step 2B")
+
+          newItem = {PPG: PPG, APG: APG, RPG: RPG, FG: FG, team: team, playerPic: playerPic, nameOfPlayer: playerName, quantity: quantity, SC: SCValue}
+          const updateName = [...playerNameArray, playerName]
+          setPlayerNameArray(updateName)
+          count++;
+          console.log("Step 2C")
         } else {
-          console.log("Invalid player")
+          console.log('Document does not exist');
         }
-      })
-  
-      //.then(response => console.log("raw response of player ID query: %s ", response))
-      .catch(err => console.error(err));
 
-
-  }
-
-  function getStats(ID){
-    let GameNum = 0;
-    let GameNumPSN = 0;
-    //console.log("Hi")
-
-    PointsNum = 0;
-    AssistNum = 0;
-    ReboundNum = 0;
-    FGTotal = 0;
-
-    PointsNumPSN = 0;
-    AssistNumPSN = 0;
-    ReboundNumPSN = 0;
-    FGTotalPSN = 0;
-
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': '414e39efb2msh611f4a40a947106p1c473bjsn2988cfa9f72f',
-        'X-RapidAPI-Host': 'tank01-fantasy-stats.p.rapidapi.com'
+        const newArray = [...playerArray, newItem];
+        setPlayerArray(newArray)
       }
-    };
+      console.log("Step 3")
+    });
 
-    console.log("Querying statistics for the player ID = %s ", ID)
-    fetch(`https://tank01-fantasy-stats.p.rapidapi.com/getNBAGamesForPlayer?playerID=${ID}&season=2023`, options)
-      .then(response => response.json())
-      .then(data => {
-        console.log("Recieved response for stats")
-        var testDict = eval(data).body
-        //console.log(testDict)
-       
-        let count = 0; 
-        for (key in testDict){
-          if (testDict.hasOwnProperty(key)) {
+    const arrLength = playerArray.length
+    console.log(arrLength)
 
-            tempPTS = parseInt(testDict[key].pts)
-            tempATS = parseInt(testDict[key].ast)
-            tempRPG = parseInt(testDict[key].reb)
-            tempFG = parseInt(testDict[key].fgp)
-            
-            if(!isNaN(tempPTS)){
-              //console.log(tempPTS)
-              PointsNum += (tempPTS)
-            }
-
-            if(!isNaN(tempATS)){
-              //console.log(tempATS)
-              AssistNum += (tempATS)
-            }
-
-            if(!isNaN(tempRPG)){
-              //console.log(tempRPG)
-              ReboundNum += (tempRPG)
-            }
-
-            if(!isNaN(tempFG)){
-              //console.log(tempFG)
-              FGTotal += (tempFG)
-            }
-          
-            GameNum++;
-            //console.log(PointsNum + " " + GameNum + " " + key)
-            count++;
-
-          }
-        }
-  
-
-        setPPG((PointsNum/GameNum).toFixed(2));
-        setRPG((ReboundNum/GameNum).toFixed(2));
-        setAPG((AssistNum/GameNum).toFixed(2));
-        setFG((FGTotal/GameNum).toFixed(2));
-
-        /* setPPGPSN((PointsNumPSN/GameNumPSN).toFixed(2));
-        setRPGPSN((ReboundNumPSN/GameNumPSN).toFixed(2));
-        setAPGPSN((AssistNumPSN/GameNumPSN).toFixed(2));
-        setFGPSN((FGTotalPSN/GameNumPSN).toFixed(2));
-        
-        setDisplayName(player); */
-      }).catch(error => console.error(error));
-      //console.log(PointsNum/GameNum)
+    if (arrLength > 0){
+      setIsTextVisible(false)
+      setIsArrayVisible(true)
+    } else {
+      setIsTextVisible(true)
+      setIsArrayVisible(false)
+    }
   }
-
+    
 }
 
 const styles = StyleSheet.create({
@@ -238,45 +169,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    marginTop: 10
+    marginTop: 10,
+    borderRadius: 20,
+    bottom: 340,
+    left: 140,
   },
-  scoresView: {
-    flex: 0.2,
-  },
-  playersView: {
-    flex: 0.2
-  }, 
-  risersView: {
-    flex: 0.2
+  playerContainer: {
+    flex: 0.1,
+    top: 150
   },
   tempViewForAPI: {
     marginBottom: 100,
     alignItems: 'center'
   },
-
-  GSP: {
-    backgroundColor: 'white',
-    width: 160,
-    height: 86,
-    borderRadius: 20,
-  },
-  GSPMini: {
-    flex: 0.1,
-    flexDirection: 'row',
-    width: 100,
-  },
-
-  GSPInside: {
-    padding: 20,
-    marginLeft: -10,
-    marginTop: -7.5,
-    fontWeight: 'bold',
-    fontSize: 15
-  },
-  teamLogos: {
-    width: 30,
-    height: 30,
-    marginLeft: 10,
-    marginTop: 5
-  }
 });
